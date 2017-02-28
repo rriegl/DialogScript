@@ -6,11 +6,15 @@ public class DialogManager : MonoBehaviour
 {
 	public GameObject DialogBox;
 	public GameObject CharacterNameBox;
+	public GameObject EnemyBox;
+
 	public Text CharacterDialog;
 	public Text CharacterName;
+	public Text EnemyDialog;
 
-	public bool DialogBoxActive;
-	public bool CharacterNameBoxActive;
+
+	public bool DialogBoxActive = true;
+	public bool CharacterNameBoxActive = true;
 
 	public string[] DialogLines;
 	public int CourrentLine; // keeps track of courent line
@@ -19,19 +23,26 @@ public class DialogManager : MonoBehaviour
 	void Start () 
 	{
 		FindObjectsOfType<DialogManager> ();
+		EnemyBox.SetActive (false);
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if (DialogBoxActive && Input.GetKeyDown(KeyCode.Space)) 
+		if (DialogBoxActive == true && Input.GetKeyDown(KeyCode.Space)) 
 		{
 			 	CourrentLine++; // increment lines 
 		}
 		if (CourrentLine >= DialogLines.Length) 
 		{
-			DialogBox.SetActive (false);
-			DialogBoxActive = false;
+			//DialogBox.SetActive (false);
+			//DialogBoxActive = false;
+
+			//Destroy (CharacterNameBox);
+			CharacterNameBox.SetActive (false);
+			CharacterNameBoxActive = false;
+
+			EnemyBox.SetActive (true);
 
 			CourrentLine = 0;
 		}
