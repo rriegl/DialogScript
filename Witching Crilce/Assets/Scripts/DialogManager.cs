@@ -2,56 +2,114 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class DialogManager : MonoBehaviour 
+public class DialogManager : MonoBehaviour
 {
 	public GameObject DialogBox;
 	public GameObject CharacterNameBox;
 	public GameObject EnemyBox;
+	public GameObject Red;
+	public GameObject Witch;
 
 	public Text CharacterDialog;
 	public Text CharacterName;
 	public Text EnemyDialog;
+	public Text EnemyName;
 
+	public bool DialogBoxActive = true; // initialises dialog box
 
-	public bool DialogBoxActive = true;
-	public bool CharacterNameBoxActive = true;
-
+	public TextAsset TextFile;
 	public string[] DialogLines;
+
 	public int CourrentLine; // keeps track of courent line
+	public int EndLine; // stops script at the end of the text
+
+	private string RedString = "RED";
+	private string WitchString = "WITCH";
 
 	// Use this for initialization
 	void Start () 
 	{
-		FindObjectsOfType<DialogManager> ();
-		EnemyBox.SetActive (false);
+		if (TextFile != null) 
+		{
+			DialogLines = (TextFile.text.Split ('\n'));
+		}
+
+		if (EndLine == 0)
+		{
+			EndLine = DialogLines.Length - 1;
+		}
+		DisableEnemyNameBox();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+		if (DialogLines[CourrentLine].Contains(RedString))
+		{
+			DisableEnemyNameBox ();
+			EnableCharacterNameBox ();
+			CourrentLine++;
+		}
+		else if (DialogLines[CourrentLine].Contains(WitchString))
+		{
+			DisableCharacterNameBox ();
+			EnableEnemyNameBox ();
+			CourrentLine++;
+		}
+
 		if (DialogBoxActive == true && Input.GetKeyDown(KeyCode.Space)) 
 		{
-			 	CourrentLine++; // increment lines 
+			 CourrentLine++; // increment lines 
 		}
-		if (CourrentLine >= DialogLines.Length) 
+
+		if (CourrentLine > EndLine) //>= DialogLines.Length
 		{
-			//DialogBox.SetActive (false);
-			//DialogBoxActive = false;
-
-			//Destroy (CharacterNameBox);
-			CharacterNameBox.SetActive (false);
-			CharacterNameBoxActive = false;
-
-			EnemyBox.SetActive (true);
-
-			CourrentLine = 0;
+			DisableDialogBox ();
+			DisableCharacterNameBox ();
+			DisableEnemyNameBox ();
+			CourrentLine = 0; // reset the line counter
 		}
 		CharacterDialog.text = DialogLines [CourrentLine];
+		if (DialogBoxActive == false) 
+		{
+			DisableCharacterNameBox ();
+			DisableEnemyNameBox ();
+		}
 	}
-	public void ShowDialogBox(string Dialog)
+	// turns on dialog, character and enemy name boxes
+	public void EnableDialogBox ()
 	{
-		DialogBoxActive = true;
-		DialogBox.SetActive(true);
-		CharacterDialog.text = Dialog;
+		DialogBox.SetActive (true); // turns on dialog box
+	}
+	public void EnableCharacterNameBox ()
+	{
+		CharacterNameBox.SetActive (true); // turns on character name box
+	}
+	public void EnableEnemyNameBox()
+	{
+		EnemyBox.SetActive (true); // turns on enemy name box
+	}
+	//turns off dialog, character and enemy name boxes
+	public void DisableDialogBox()
+	{
+		DialogBox.SetActive (false); // turns off dialog box
+	}
+	public void DisableCharacterNameBox()
+	{
+		CharacterNameBox.SetActive (false); // turns off character name box
+	}
+	public void DisableEnemyNameBox()
+	{
+		EnemyBox.SetActive (false); // Turns off enemy name box
+	}
+
+	//Reload the script with diffrent textfile for diffrent scenes????
+	public void ReloadScript(TextAsset NewTextFile)
+	{
+		if (TextFile != null) 
+		{
+			DialogLines = new string[1];
+			DialogLines = (NewTextFile.text.Split ('\n'));
+		}
 	}
 }
