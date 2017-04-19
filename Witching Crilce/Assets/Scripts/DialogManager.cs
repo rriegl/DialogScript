@@ -25,9 +25,11 @@ public class DialogManager : MonoBehaviour
 
 	private string RedString = "RED";
 	private string WitchString = "WITCH";
-
-	// Use this for initialization
-	void Start () 
+    private string EndString = "END";
+    private string BothString = "BOTH";
+    private string NoneString = "NONE";
+    // Use this for initialization
+    void Start () 
 	{
 		if (TextFile != null) 
 		{
@@ -56,12 +58,36 @@ public class DialogManager : MonoBehaviour
 			EnableEnemyNameBox ();
 			CourrentLine++;
 		}
+        else if (DialogLines[CourrentLine].Contains(BothString))
+        {
+            Debug.Log("BOTH");
+            DialogBox.SetActive(true);
+            CharacterNameBox.SetActive(true);
+            EnemyBox.SetActive(true);
+            CourrentLine++;
+        }
+        else if (DialogLines[CourrentLine].Contains(NoneString))
+        {
+            Debug.Log("NONE");
+            DialogBox.SetActive(true);
+            CharacterNameBox.SetActive(false);
+            EnemyBox.SetActive(false);
+            CourrentLine++;
+        }
+        else if (DialogLines[CourrentLine].Contains(EndString))
+        {
+            DialogBox.SetActive(false);
+            CharacterNameBox.SetActive(false);
+            EnemyBox.SetActive(false);
+            //DialogBox.SetActive(false);
+            DialogBoxActive = false;
+        }
 
-		if (DialogBoxActive == true && Input.GetKeyDown(KeyCode.Space)) 
+        if (DialogBoxActive == true && Input.GetKeyDown(KeyCode.Space)) 
 		{
 			 CourrentLine++; // increment lines 
 		}
-
+        /*
 		if (CourrentLine > EndLine) //>= DialogLines.Length
 		{
 			DisableDialogBox ();
@@ -69,6 +95,7 @@ public class DialogManager : MonoBehaviour
 			DisableEnemyNameBox ();
 			CourrentLine = 0; // reset the line counter
 		}
+        */
 		CharacterDialog.text = DialogLines [CourrentLine];
 		if (DialogBoxActive == false) 
 		{
@@ -76,6 +103,8 @@ public class DialogManager : MonoBehaviour
 			DisableEnemyNameBox ();
 		}
 	}
+
+
 	// turns on dialog, character and enemy name boxes
 	public void EnableDialogBox ()
 	{
